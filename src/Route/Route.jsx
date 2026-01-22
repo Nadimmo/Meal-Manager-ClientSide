@@ -6,6 +6,8 @@ import ManageBorder from '../pages/Dashoboard/ManageBorder/ManageBorder.jsx';
 import ManageUsers from '../pages/Dashoboard/ManageUsers/ManageUsers.jsx';
 import MealCalculation from '../pages/Dashoboard/MealCalculation/MealCalculation.jsx';
 import AddNewBorder from '../pages/Dashoboard/AddNewBorder/AddNewBorder.jsx';
+import Login from '../components/Login/Login.jsx';
+import Register from '../components/Register/Register.jsx';
 
 
 const Route = createBrowserRouter([
@@ -16,6 +18,14 @@ const Route = createBrowserRouter([
         {
             path:"/",
             element: <Home></Home>
+        },
+        {
+            path:"/login",
+            element: <Login/>
+        },
+        {
+            path:"/register",
+            element: <Register/>
         },
         
     ]
