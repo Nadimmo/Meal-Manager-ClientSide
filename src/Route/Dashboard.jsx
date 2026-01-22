@@ -20,8 +20,8 @@ const Dashboard = () => {
         >
           <div>
             <ul className="space-y-3">
-              <NavLink
-                to="/dashboard/addBorder"
+               <NavLink
+                to="/dashboard/addNewBorder"
                 className={({ isActive }) =>
                   isActive
                     ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
@@ -29,6 +29,16 @@ const Dashboard = () => {
                 }
               >
                 Add New Border
+              </NavLink>
+              <NavLink
+                to="/dashboard/mealCalculation"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                    : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                }
+              >
+                Meal Calculation
               </NavLink>
               <NavLink
                 to="/dashboard/manageBorder"
