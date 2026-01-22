@@ -1,8 +1,11 @@
 import React from 'react'
+import AllUsers from '../../components/AllUsers/AllUsers'
 
 function Home() {
   return (
-    <div className='min-h-screen'>Home</div>
+    <div className='min-h-screen'>
+      <AllUsers/>
+    </div>
   )
 }
 
