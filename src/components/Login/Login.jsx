@@ -1,15 +1,27 @@
-import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import React, { useContext, useState } from 'react';
+import { Link, useNavigate} from 'react-router-dom';
+import { AuthContext } from '../../AuthProvider/AuthProvider';
 
 const Login = () => {
+  const {signIn}= useContext(AuthContext)
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log("Logging in with:", { email, password });
-    // Add authentication logic here
-  };
+    signIn(email, password)
+    .then(()=>{
+        alert("Login successful!");
+        setEmail('');
+        setPassword('')
+        navigate('/');
+
+    })
+    .catch((error)=>{
+      alert(`Error: ${error.message}`);
+    });
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4">

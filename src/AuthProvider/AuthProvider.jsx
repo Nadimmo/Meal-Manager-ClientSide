@@ -2,6 +2,7 @@ import { createClient } from "@supabase/supabase-js";
 import { log } from "firebase/firestore/pipelines";
 import React, { createContext, useEffect, useState } from "react";
 import { supabase } from "../supabaseClient";
+import { data } from "react-router-dom";
 
 export const AuthContext = createContext(null);
 
@@ -11,7 +12,6 @@ const AuthProvider = ({ children }) => {
     const [user, setUser] = useState(null);
     const [loading, setLoading] = useState(true);
 
-  //   // Get initial session + listen for changes
     useEffect(() => {
       supabase.auth.getSession().then(({ data: { session } }) => {
         setUser(session?.user ?? null);
@@ -28,7 +28,7 @@ const AuthProvider = ({ children }) => {
       return () => listener.subscription.unsubscribe();
     }, []);
 
-  // ✉️ Email signup
+  //  Email signup
     const signUp = async (email, password) => {
       setLoading(true);
       const { data, error } = await supabase.auth.signUp({
@@ -39,7 +39,7 @@ const AuthProvider = ({ children }) => {
       return { data, error };
     };
 
-  // 🔑 Email login
+  //  Email login
     const signIn = async (email, password) => {
       setLoading(true);
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
       return { data, error };
     };
 
-  // 🌐 Google login
+  //  Google login
   //   const googleSignIn = async () => {
   //     const { error } = await supabase.auth.signInWithOAuth({
   //       provider: 'google',
@@ -58,18 +58,18 @@ const AuthProvider = ({ children }) => {
   //     return { error }
   //   }
 
-  // 🚪 Logout
-  //   const logOut = async () => {
-  //     await supabase.auth.signOut();
-  //     setUser(null);
-  //   };
+  //  Logout
+    const logOut = async () => {
+      await supabase.auth.signOut();
+      setUser(null);
+    };
 
   const authInfo = {
-    nadim: "hello from auth provider",
     signUp,
     signIn,
     user,
     loading,
+    logOut,
   };
 
   return (

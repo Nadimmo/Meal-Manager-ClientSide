@@ -1,9 +1,10 @@
 import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const Register = () => {
   const { signUp } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -23,12 +24,18 @@ const Register = () => {
       return;
     }
     signUp(formData.email, formData.password).then(({ data, error }) => {
-      console.log(data);
       
       if (error) {
         alert(`Error: ${error.message}`);
       } else {
-        alert("Registration successful! Please check your email to verify your account.");
+        alert("Registration successful! check your email for verification.");
+        setFormData({
+          fullName: "",
+          email: "",
+          password: "",
+          confirmPassword: "",
+        })
+        navigate("/");
       }
   });
   }
