@@ -1,7 +1,10 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router-dom";
+import { AuthContext } from "../../AuthProvider/AuthProvider";
 
 const Register = () => {
+  const { signUp } = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",
@@ -19,8 +22,16 @@ const Register = () => {
       alert("Passwords do not match!");
       return;
     }
-    console.log("Registering user:", formData);
-  };
+    signUp(formData.email, formData.password).then(({ data, error }) => {
+      console.log(data);
+      
+      if (error) {
+        alert(`Error: ${error.message}`);
+      } else {
+        alert("Registration successful! Please check your email to verify your account.");
+      }
+  });
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
@@ -31,11 +42,14 @@ const Register = () => {
           </h2>
           <p className="text-slate-500 mt-2">Join the Meal Manager system</p>
           <p className="text-center text-sm text-slate-500 mt-2">
-          Already have an account?{" "}
-          <Link to="/login" className="text-indigo-600 font-bold hover:underline">
-            Log In
-          </Link>
-        </p>
+            Already have an account?{" "}
+            <Link
+              to="/login"
+              className="text-indigo-600 font-bold hover:underline"
+            >
+              Log In
+            </Link>
+          </p>
         </div>
 
         <form onSubmit={handleRegister} className="space-y-5">
@@ -102,10 +116,6 @@ const Register = () => {
             Create Account
           </button>
         </form>
-
-        
-        
-
 
         <button className="btn bg-white text-black border-[#e5e5e5] w-full mt-2">
           <svg
