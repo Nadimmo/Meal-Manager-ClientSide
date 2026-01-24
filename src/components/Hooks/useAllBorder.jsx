@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query";
 
 const useAllBorder = () => {
   const axiosPublic = useAxiosPublic();
-  const { data: borders = [] } = useQuery({
+  const { data: borders = [], refetch } = useQuery({
     queryKey: ["borders"],
     queryFn: async () => {
       const res = await axiosPublic.get("/borders");
@@ -12,7 +12,7 @@ const useAllBorder = () => {
     },
   });
 
-  return { borders };
+  return { borders , refetch};
 };
 
 export default useAllBorder;

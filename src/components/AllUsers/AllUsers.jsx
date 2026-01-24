@@ -4,7 +4,7 @@ import { log } from 'firebase/firestore/pipelines';
 
 const AllUsers = () => {
   // Updated mock data with Deposit and Bill
-  const { borders } = useAllBorder();
+  const { borders, refetch } = useAllBorder();
   
 
   return (
@@ -29,7 +29,9 @@ const AllUsers = () => {
             <tbody className="text-slate-700 text-sm">
               {borders.map((member) => {
                 // Calculation Logic
-                const bill = member.meals || 0 * member.mealCharge;
+                const bill =( member.mealCount || 0) * parseInt(member.mealCharge);
+                console.log(member.mealCharge * member.mealCount);
+                
                 const balance = member.deposit - bill;
                 const isDue = balance < 0;
                 const isCleared = balance === 0;
@@ -41,13 +43,13 @@ const AllUsers = () => {
                       <div className="text-xs text-slate-400">{member.email}</div>
                     </td>
                     <td className="py-4 px-6 text-center font-medium">
-                      {member.meals || 0}
+                      {member.mealCount || 0}
                     </td>
                     <td className="py-4 px-6 text-center text-blue-600 font-bold">
                       ৳{member.deposit}
                     </td>
                     <td className="py-4 px-6 text-center text-orange-600 font-bold">
-                      ৳{member.bill}
+                      ৳{bill}
                     </td>
                     <td className="py-4 px-6 text-center">
                       {isCleared ? (
