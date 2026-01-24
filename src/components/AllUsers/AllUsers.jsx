@@ -1,13 +1,11 @@
 import React from 'react';
+import useAllBorder from '../Hooks/useAllBorder';
+import { log } from 'firebase/firestore/pipelines';
 
 const AllUsers = () => {
   // Updated mock data with Deposit and Bill
-  const members = [
-    { id: 1, name: "John Doe", email: "john@example.com", meals: 45, deposit: 2000, bill: 2000 },
-    { id: 2, name: "Sarah Smith", email: "sarah@example.com", meals: 38, deposit: 1500, bill: 1200 },
-    { id: 3, name: "Mike Ross", email: "mike@example.com", meals: 12, deposit: 500, bill: 2000 },
-    { id: 4, name: "Emily Davis", email: "emily@example.com", meals: 50, deposit: 2500, bill: 2200 },
-  ];
+  const { borders } = useAllBorder();
+  
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
@@ -29,9 +27,10 @@ const AllUsers = () => {
               </tr>
             </thead>
             <tbody className="text-slate-700 text-sm">
-              {members.map((member) => {
+              {borders.map((member) => {
                 // Calculation Logic
-                const balance = member.deposit - member.bill;
+                const bill = member.meals || 0 * member.mealCharge;
+                const balance = member.deposit - bill;
                 const isDue = balance < 0;
                 const isCleared = balance === 0;
 
@@ -42,7 +41,7 @@ const AllUsers = () => {
                       <div className="text-xs text-slate-400">{member.email}</div>
                     </td>
                     <td className="py-4 px-6 text-center font-medium">
-                      {member.meals}
+                      {member.meals || 0}
                     </td>
                     <td className="py-4 px-6 text-center text-blue-600 font-bold">
                       ৳{member.deposit}

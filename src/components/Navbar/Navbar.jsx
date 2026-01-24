@@ -15,7 +15,7 @@ function Navbar() {
         Home
       </Link>
       <Link
-        to="/dashboard"
+        to="/dashboard/addNewBorder"
         className="relative py-1 px-2 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full"
       >
         Dashboard

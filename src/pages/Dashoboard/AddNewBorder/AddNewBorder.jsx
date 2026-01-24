@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import useAxiosPublic from "../../../components/Hooks/useAxiosPublic";
 
 const AddNewBorder = () => {
+  const axiosPublic = useAxiosPublic();
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    roomNo: '',
-    mealCharge: '',
-    deposit: '',
+    name: "",
+    email: "",
+    phone: "",
+    roomNo: "",
+    mealCharge: "",
+    deposit: "",
   });
 
   const handleChange = (e) => {
@@ -17,25 +19,46 @@ const AddNewBorder = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("New Border Data:", formData);
-    alert(`Member ${formData.name} added successfully!`);
-    // Reset form after submission
-    setFormData({ name: '', email: '', phone: '', roomNo: '', mealCharge: '', deposit: '' });
+    // console.log("New Border Data:", formData);
+
+    axiosPublic.post("/add-borders", formData)
+      .then((res) => {
+        if (res.data.insertedId) {
+          alert("New border added successfully!");
+          setFormData({
+            name: "",
+            email: "",
+            phone: "",
+            roomNo: "",
+            mealCharge: "",
+            deposit: "",
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("There was an error adding the border!", error);
+      });
   };
 
   return (
     <div className="p-8 bg-gray-50 min-h-screen flex justify-center items-start">
       <div className="w-full max-w-2xl bg-white shadow-2xl rounded-2xl p-8 border border-gray-100">
         <div className="mb-8 border-b pb-4">
-          <h2 className="text-3xl font-extrabold text-gray-800">Add New Border</h2>
-          <p className="text-gray-500">Register a new member to the mess management system.</p>
+          <h2 className="text-3xl font-extrabold text-gray-800">
+            Add New Border
+          </h2>
+          <p className="text-gray-500">
+            Register a new member to the mess management system.
+          </p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Name Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Full Name
+              </label>
               <input
                 type="text"
                 name="name"
@@ -49,7 +72,9 @@ const AddNewBorder = () => {
 
             {/* Email Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Email Address
+              </label>
               <input
                 type="email"
                 name="email"
@@ -63,7 +88,9 @@ const AddNewBorder = () => {
 
             {/* Phone Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Phone Number</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Phone Number
+              </label>
               <input
                 type="tel"
                 name="phone"
@@ -76,7 +103,9 @@ const AddNewBorder = () => {
 
             {/* Room Number Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Room Number</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Room Number
+              </label>
               <input
                 type="text"
                 name="roomNo"
@@ -89,7 +118,9 @@ const AddNewBorder = () => {
 
             {/* Meal Charge Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Initial Meal Charge</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Initial Meal Charge
+              </label>
               <div className="relative">
                 <span className="absolute left-4 top-3 text-gray-400">৳</span>
                 <input
@@ -105,7 +136,9 @@ const AddNewBorder = () => {
 
             {/* Deposit Field */}
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Advance Deposit</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Advance Deposit
+              </label>
               <div className="relative">
                 <span className="absolute left-4 top-3 text-gray-400">৳</span>
                 <input
