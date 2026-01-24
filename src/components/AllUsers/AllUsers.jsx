@@ -1,6 +1,5 @@
 import React from 'react';
 import useAllBorder from '../Hooks/useAllBorder';
-import { log } from 'firebase/firestore/pipelines';
 
 const AllUsers = () => {
   // Updated mock data with Deposit and Bill
@@ -30,7 +29,6 @@ const AllUsers = () => {
               {borders.map((member) => {
                 // Calculation Logic
                 const bill =( member.mealCount || 0) * parseInt(member.mealCharge);
-                console.log(member.mealCharge * member.mealCount);
                 
                 const balance = member.deposit - bill;
                 const isDue = balance < 0;

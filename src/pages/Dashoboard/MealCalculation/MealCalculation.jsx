@@ -16,28 +16,39 @@ const MealCalculation = () => {
     setBorders(
       initialBorders.map(b => ({
         ...b,
-        mealCount: b.mealCount || 0
+        mealCount: b.mealCount || 0,
+        todayMeal: 0, 
       }))
     );
   }
 }, [initialBorders]);
 
 
+
   // Handle increment and decrement
   const updateMealCount = (memberId, delta) => {
-    setBorders(prevBorders =>
-      prevBorders.map(member =>
-        member._id === memberId
-          ? { ...member, mealCount: Math.max(0, (member.mealCount || 0) + delta) }
-          : member
-      )
-    );
-  };
+  setBorders(prev =>
+    prev.map(member =>
+      member._id === memberId
+        ? {
+            ...member,
+            mealCount: Math.max(0, member.mealCount + delta),
+            todayMeal:
+              delta > 0
+                ? member.todayMeal + delta
+                : Math.max(0, member.todayMeal + delta),
+          }
+        : member
+    )
+  );
+};
+
 
 
 const handleSubmit = async () => {
+  // update meal counts for each border
   const payload = {
-    date: selectedDate,
+    date: new Date(),
     borders: borders.map(member => ({
       borderId: member._id,     // important
       email: member.email,
@@ -51,11 +62,37 @@ const handleSubmit = async () => {
     if (res.data.modifiedCount > 0) {
       alert("Meal counts updated successfully!");
     }
+
+
+    // send data to server border monthly meal collection
+    const monthlyPayload ={
+      month: new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
+      borders: borders.map(member => ({
+        date: new Date(),
+        name: member.name,
+        email: member.email,
+        meal: member.todayMeal || 0,
+    } )),
+    };
+
+    const monthlyRes = await axiosPublic.post("/borders/monthly-meals", monthlyPayload);
+    if (monthlyRes.data.insertedCount > 0) {
+      console.log("Monthly meal data recorded successfully!");
+    }
+
+// Reset todayMeal counts after submission
+    setBorders(prev =>
+  prev.map(b => ({ ...b, todayMeal: 0 }))
+);
+
+
   } catch (err) {
     console.error("Error updating meal counts:", err);
     alert("Failed to update meal counts");
   }
 };
+
+
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
@@ -98,6 +135,7 @@ const handleSubmit = async () => {
             </thead>
             <tbody className="divide-y divide-slate-100">
               {borders.map((member) => (
+                
                 <tr key={member._id} className="hover:bg-slate-50/50 transition">
                   <td className="px-6 py-4">
                     <div className="font-semibold text-slate-800">
