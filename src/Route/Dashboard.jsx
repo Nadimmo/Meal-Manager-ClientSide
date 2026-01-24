@@ -41,6 +41,16 @@ const Dashboard = () => {
                 Meal Calculation
               </NavLink>
               <NavLink
+                to="/dashboard/monthlyMeals"
+                className={({ isActive }) =>
+                  isActive
+                    ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                    : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                }
+              >
+                Monthly Meals
+              </NavLink>
+              <NavLink
                 to="/dashboard/manageBorder"
                 className={({ isActive }) =>
                   isActive

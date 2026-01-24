@@ -8,6 +8,7 @@ import MealCalculation from '../pages/Dashoboard/MealCalculation/MealCalculation
 import AddNewBorder from '../pages/Dashoboard/AddNewBorder/AddNewBorder.jsx';
 import Login from '../components/Login/Login.jsx';
 import Register from '../components/Register/Register.jsx';
+import MonthlyMeals from '../pages/Dashoboard/MonthlyMeals/MonthlyMeals.jsx';
 
 
 const Route = createBrowserRouter([
@@ -50,6 +51,10 @@ const Route = createBrowserRouter([
       {
         path: "/dashboard/manageUsers",
         element: <ManageUsers/>
+      },
+      {
+        path: "/dashboard/monthlyMeals",
+        element: <MonthlyMeals/>
       }
     ]
   }
