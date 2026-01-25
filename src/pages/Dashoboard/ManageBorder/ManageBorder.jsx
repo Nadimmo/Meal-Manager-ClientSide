@@ -12,6 +12,7 @@ const ManageBorder = () => {
     name: "",
     email: "",
     deposit: "",
+    mealCharge: "",
   });
 
   // -------- DELETE --------
@@ -43,6 +44,7 @@ const ManageBorder = () => {
       name: user.name,
       email: user.email,
       deposit: user.deposit || "",
+      mealCharge: user.mealCharge || "",
     });
     document.getElementById("update_modal").checked = true;
   };
@@ -140,11 +142,20 @@ const ManageBorder = () => {
           />
 
           <input
-            className="input input-bordered w-full"
+            className="input input-bordered w-full mb-3"
             placeholder="Deposit"
             value={formData.deposit}
             onChange={(e) =>
               setFormData({ ...formData, deposit: e.target.value })
+            }
+          />
+
+          <input
+            className="input input-bordered w-full"
+            placeholder="Meal Charge"
+            value={formData.mealCharge}
+            onChange={(e) =>
+              setFormData({ ...formData, mealCharge: e.target.value })
             }
           />
 
