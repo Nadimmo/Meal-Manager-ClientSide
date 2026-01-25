@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import useAllUsers from '../../../components/Hooks/useAllUsers';
 import Swal from 'sweetalert2';
-import useAxiosPublic from '../../../components/Hooks/useAxiosPublic';
+import useAxiosSecure from '../../../components/Hooks/useAxiosSecure';
 
 const ManageUsers = () => {
   // Mock data including a "role" field
   const {allUsers, refetch} = useAllUsers()
-  const axiosPublic = useAxiosPublic()
+  const axiosSecure = useAxiosSecure()
 
   const handleMakeAdmin = (id) => {
     alert(`User ${id} is now an Admin! (Backend logic goes here)`);
@@ -25,7 +25,7 @@ const ManageUsers = () => {
         confirmButtonText: "Yes, delete it!",
       }).then((result) => {
         if (result.isConfirmed) {
-          axiosPublic.delete(`/users/${id}`).then((res) => {
+          axiosSecure.delete(`/users/${id}`).then((res) => {
             if (res.data.deletedCount > 0) {
               Swal.fire("Deleted!", "User removed successfully.", "success");
               refetch();

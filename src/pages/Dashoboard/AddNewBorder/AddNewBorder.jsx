@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import useAxiosPublic from "../../../components/Hooks/useAxiosPublic";
+import useAxiosSecure from "../../../components/Hooks/useAxiosSecure";
 
 const AddNewBorder = () => {
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -21,7 +21,7 @@ const AddNewBorder = () => {
     e.preventDefault();
     // console.log("New Border Data:", formData);
 
-    axiosPublic.post("/add-borders", formData)
+    axiosSecure.post("/add-borders", formData)
       .then((res) => {
         if (res.data.insertedId) {
           alert("New border added successfully!");

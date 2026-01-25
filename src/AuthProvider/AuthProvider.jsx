@@ -52,17 +52,19 @@ const AuthProvider = ({ children }) => {
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((currentUser) => {
       setUser(currentUser);
-      setLoading(false);
       // get and set token
       if (currentUser) {
-        axiosPublic.post("/jwt", { email: currentUser.email }).then((data) => {
-          console.log(data.data.token);
-          localStorage.setItem("access-token", data.data.token);
-          setLoading(false);
+        const userInfo = { email: currentUser.email };
+        axiosPublic.post("/jwt", userInfo).then((res) => {
+          // console.log(data.data.token);
+          if (res.data.token) {
+            localStorage.setItem("access-token", res.data.token);
+          }
         });
       } else {
         localStorage.removeItem("access-token");
       }
+      setLoading(false);
     });
     return () => {
       unsubscribe();

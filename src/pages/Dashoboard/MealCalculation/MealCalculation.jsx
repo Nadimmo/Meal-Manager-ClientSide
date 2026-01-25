@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import useAllBorder from "../../../components/Hooks/useAllBorder";
-import useAxiosPublic from "../../../components/Hooks/useAxiosPublic";
+import useAxiosSecure from "../../../components/Hooks/useAxiosSecure";
 
 const MealCalculation = () => {
   // Current Date for the input (defaults to today)
   const today = new Date().toISOString().split("T")[0];
   const [selectedDate, setSelectedDate] = useState(today);
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
   const { borders: initialBorders } = useAllBorder();
   const [borders, setBorders] = useState([]);
@@ -57,7 +57,7 @@ const handleSubmit = async () => {
   };
 
   try {
-    const res = await axiosPublic.patch("/borders/meals", payload);
+    const res = await axiosSecure.patch("/borders/meals", payload);
 
     if (res.data.modifiedCount > 0) {
       alert("Meal counts updated successfully!");
@@ -75,7 +75,7 @@ const handleSubmit = async () => {
     } )),
     };
 
-    const monthlyRes = await axiosPublic.post("/monthly-meals", monthlyPayload);
+    const monthlyRes = await axiosSecure.post("/monthly-meals", monthlyPayload);
     if (monthlyRes.data.insertedId> 0) {
       console.log("Monthly meal data recorded successfully!");
     }

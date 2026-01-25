@@ -1,13 +1,13 @@
 import React from "react";
-import useAxiosPublic from "./useAxiosPublic";
 import { useQuery } from "@tanstack/react-query";
+import useAxiosSecure from "./useAxiosSecure";
 
 const useAllBorder = () => {
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure()
   const { data: borders = [], refetch } = useQuery({
     queryKey: ["borders"],
     queryFn: async () => {
-      const res = await axiosPublic.get("/borders");
+      const res = await axiosSecure.get("/borders");
       return res.data;
     },
   });

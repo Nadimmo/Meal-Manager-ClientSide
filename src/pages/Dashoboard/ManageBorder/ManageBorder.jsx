@@ -1,11 +1,11 @@
 import React, { useState } from "react";
 import useAllBorder from "../../../components/Hooks/useAllBorder";
-import useAxiosPublic from "../../../components/Hooks/useAxiosPublic";
 import Swal from "sweetalert2";
+import useAxiosSecure from "../../../components/Hooks/useAxiosSecure";
 
 const ManageBorder = () => {
   const { borders, refetch } = useAllBorder();
-  const axiosPublic = useAxiosPublic();
+  const axiosSecure = useAxiosSecure();
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
@@ -27,7 +27,7 @@ const ManageBorder = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosPublic.delete(`/borders/${id}`).then((res) => {
+        axiosSecure.delete(`/borders/${id}`).then((res) => {
           if (res.data.deletedCount > 0) {
             Swal.fire("Deleted!", "Border removed successfully.", "success");
             refetch();
@@ -52,7 +52,7 @@ const ManageBorder = () => {
   // -------- UPDATE --------
   const handleUpdate = async () => {
     try {
-      const res = await axiosPublic.put(
+      const res = await axiosSecure.put(
         `/borders/${selectedUser._id}`,
         formData
       );
