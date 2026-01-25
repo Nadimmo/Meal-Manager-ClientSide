@@ -1,25 +1,39 @@
 import React, { useState } from 'react';
+import useAllUsers from '../../../components/Hooks/useAllUsers';
+import Swal from 'sweetalert2';
+import useAxiosPublic from '../../../components/Hooks/useAxiosPublic';
 
 const ManageUsers = () => {
   // Mock data including a "role" field
-  const [users, setUsers] = useState([
-    { id: 1, name: "John Doe", email: "john@example.com", role: "admin" },
-    { id: 2, name: "Sarah Smith", email: "sarah@example.com", role: "user" },
-    { id: 3, name: "Mike Ross", email: "mike@example.com", role: "user" },
-    { id: 4, name: "Emily Davis", email: "emily@example.com", role: "user" },
-  ]);
+  const {allUsers, refetch} = useAllUsers()
+  const axiosPublic = useAxiosPublic()
 
   const handleMakeAdmin = (id) => {
     alert(`User ${id} is now an Admin! (Backend logic goes here)`);
     // Logic to update state would go here
   };
 
-  const handleDelete = (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this user?");
-    if (confirmed) {
-      setUsers(users.filter(user => user.id !== id));
-    }
-  };
+  // -------- DELETE --------
+    const handleDelete = (id) => {
+      Swal.fire({
+        title: "Are you sure?",
+        text: "This user will be removed!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          axiosPublic.delete(`/users/${id}`).then((res) => {
+            if (res.data.deletedCount > 0) {
+              Swal.fire("Deleted!", "User removed successfully.", "success");
+              refetch();
+            }
+          });
+        }
+      });
+    };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
@@ -40,22 +54,22 @@ const ManageUsers = () => {
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
+              {allUsers?.map((user) => (
                 <tr key={user.id} className="border-b border-gray-100 hover:bg-gray-50 transition">
-                  <td className="px-6 py-4 font-medium text-gray-900">{user.name}</td>
+                  <td className="px-6 py-4 font-medium text-gray-900">{user.fullName}</td>
                   <td className="px-6 py-4 text-gray-600">{user.email}</td>
                   <td className="px-6 py-4">
                     <span className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${
                       user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'
                     }`}>
-                      {user.role}
+                      {user.role || 'member'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-3">
                       {/* Make Admin Button */}
                       <button 
-                        onClick={() => handleMakeAdmin(user.id)}
+                        onClick={() => handleMakeAdmin(user._id)}
                         disabled={user.role === 'admin'}
                         className={`px-3 py-1.5 text-xs font-semibold rounded-md border transition-all ${
                           user.role === 'admin' 
@@ -68,7 +82,7 @@ const ManageUsers = () => {
 
                       {/* Delete Button */}
                       <button 
-                        onClick={() => handleDelete(user.id)}
+                        onClick={() => handleDelete(user._id)}
                         className="px-3 py-1.5 text-xs font-semibold text-rose-600 border border-rose-600 rounded-md hover:bg-rose-600 hover:text-white transition-all"
                       >
                         Delete
@@ -79,7 +93,7 @@ const ManageUsers = () => {
               ))}
             </tbody>
           </table>
-          {users.length === 0 && (
+          {allUsers?.length === 0 && (
             <div className="p-10 text-center text-gray-400">
               No users found.
             </div>
