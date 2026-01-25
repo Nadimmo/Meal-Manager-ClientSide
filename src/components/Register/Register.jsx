@@ -1,10 +1,12 @@
 import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
+import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const Register = () => {
-  const { signUp } = useContext(AuthContext);
+  const { signUp, profileUpdate } = useContext(AuthContext);
   const navigate = useNavigate();
+  const axiosPublic = useAxiosPublic();
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -19,27 +21,39 @@ const Register = () => {
 
   const handleRegister = (e) => {
     e.preventDefault();
+    const userInfo = {
+      fullName: formData.fullName,
+      email: formData.email,
+    };
+  //  // Password match check 
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    signUp(formData.email, formData.password).then(({ data, error }) => {
-      
-      if (error) {
-        alert(`Error: ${error.message}`);
-      } else {
-        alert("Registration successful! check your email for verification.");
-        setFormData({
-          fullName: "",
-          email: "",
-          password: "",
-          confirmPassword: "",
-        })
-        navigate("/");
-      }
-  });
-  }
+    signUp(formData.email, formData.password).then((userCredential) => {
+      if (userCredential.user) {
+        profileUpdate(formData.fullName)
+        .then((res)=>{
+        // send data info to backend
 
+          axiosPublic.post("/users", userInfo).then((res) => {
+          if (res.data.insertedId) {
+            alert(
+              "Registration successful!",
+            );
+            setFormData({
+              fullName: "",
+              email: "",
+              password: "",
+              confirmPassword: "",
+            });
+            navigate("/");
+          }
+        });
+        })
+      }
+    });
+  };
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
       <div className="max-w-md w-full bg-white rounded-2xl shadow-xl p-8 border border-slate-100">

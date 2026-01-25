@@ -11,7 +11,7 @@ const Login = () => {
   const handleLogin = (e) => {
     e.preventDefault();
     signIn(email, password)
-    .then(()=>{
+    .then((res)=>{
         alert("Login successful!");
         setEmail('');
         setPassword('')

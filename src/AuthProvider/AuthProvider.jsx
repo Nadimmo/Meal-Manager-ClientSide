@@ -1,75 +1,69 @@
-import { createClient } from "@supabase/supabase-js";
-import { log } from "firebase/firestore/pipelines";
+import {
+  createUserWithEmailAndPassword,
+  getAuth,
+  GoogleAuthProvider,
+  signInWithEmailAndPassword,
+  signOut,
+  updateProfile,
+  signInWithPopup,
+  onAuthStateChanged
+} from "firebase/auth";
 import React, { createContext, useEffect, useState } from "react";
-import { supabase } from "../supabaseClient";
-import { data } from "react-router-dom";
+import app from "../Firebase/firebase.config";
 
+const GoogleProvider = new GoogleAuthProvider();
 export const AuthContext = createContext(null);
 
 const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const auth = getAuth(app);
 
+  const signUp = (email, password) => {
+    setLoading(true);
+    return createUserWithEmailAndPassword(auth, email, password);
+  };
 
-    const [user, setUser] = useState(null);
-    const [loading, setLoading] = useState(true);
+  const signIn = (email, password) => {
+    setLoading(true);
+    return signInWithEmailAndPassword(auth, email, password);
+  };
 
-    useEffect(() => {
-      supabase.auth.getSession().then(({ data: { session } }) => {
-        setUser(session?.user ?? null);
-        setLoading(false);
-      });
+  const logOut = () => {
+    setLoading(true);
+    return signOut(auth);
+  };
 
-      const { data: listener } = supabase.auth.onAuthStateChange(
-        (_event, session) => {
-          setUser(session?.user ?? null);
-          setLoading(false);
-        },
-      );
+  const profileUpdate = (name, image) => {
+    setLoading(true);
+    return updateProfile(auth.currentUser, {
+      displayName: name,
+    });
+  };
 
-      return () => listener.subscription.unsubscribe();
-    }, []);
+  const googleSignIn = () => {
+    setLoading(true);
+    return signInWithPopup(auth, GoogleProvider);
+  };
 
-  //  Email signup
-    const signUp = async (email, password) => {
-      setLoading(true);
-      const { data, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
       setLoading(false);
-      return { data, error };
+    });
+    return () => {
+      unsubscribe();
     };
-
-  //  Email login
-    const signIn = async (email, password) => {
-      setLoading(true);
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
-      setLoading(false);
-      return { data, error };
-    };
-
-  //  Google login
-  //   const googleSignIn = async () => {
-  //     const { error } = await supabase.auth.signInWithOAuth({
-  //       provider: 'google',
-  //     })
-  //     return { error }
-  //   }
-
-  //  Logout
-    const logOut = async () => {
-      await supabase.auth.signOut();
-      setUser(null);
-    };
+  }, []);
 
   const authInfo = {
-    signUp,
-    signIn,
     user,
     loading,
+    signUp,
+    signIn,
     logOut,
+    profileUpdate,
+    googleSignIn,
   };
 
   return (

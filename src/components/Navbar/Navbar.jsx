@@ -5,6 +5,7 @@ import { AuthContext } from "../../AuthProvider/AuthProvider";
 function Navbar() {
   const { user, logOut } = useContext(AuthContext);
   const navigate = useNavigate()
+  
 
   const Links = (
     <>
@@ -70,6 +71,7 @@ function Navbar() {
       <div className="navbar-end">
         {user ? (
           <>
+            <span className="mr-4">Hello, {user?.displayName}</span>
             <button onClick={handleOut} className="btn btn-ghost">
               Logout
             </button>

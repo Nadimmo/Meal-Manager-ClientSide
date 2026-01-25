@@ -35,7 +35,7 @@ const AllUsers = () => {
                 const isCleared = balance === 0;
 
                 return (
-                  <tr key={member.id} className="border-b border-slate-100 hover:bg-blue-50/50 transition-colors">
+                  <tr key={member._id} className="border-b border-slate-100 hover:bg-blue-50/50 transition-colors">
                     <td className="py-4 px-6">
                       <div className="font-bold text-slate-900">{member.name}</div>
                       <div className="text-xs text-slate-400">{member.email}</div>
