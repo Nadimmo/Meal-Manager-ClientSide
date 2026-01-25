@@ -9,6 +9,7 @@ import AddNewBorder from '../pages/Dashoboard/AddNewBorder/AddNewBorder.jsx';
 import Login from '../components/Login/Login.jsx';
 import Register from '../components/Register/Register.jsx';
 import MonthlyMeals from '../pages/Dashoboard/MonthlyMeals/MonthlyMeals.jsx';
+import PrivateRoute from './PrivateRoute.jsx';
 
 
 const Route = createBrowserRouter([
@@ -37,24 +38,24 @@ const Route = createBrowserRouter([
     children: [
       {
         path: "/dashboard/addNewBorder",
-        element: <AddNewBorder/>
+        element: <PrivateRoute><AddNewBorder/></PrivateRoute>
       }
       ,
       {
         path: "/dashboard/mealCalculation",
-        element: <MealCalculation/>
+        element: <PrivateRoute><MealCalculation/></PrivateRoute>
       },
       {
         path: "/dashboard/manageBorder",
-        element: <ManageBorder/>,
+        element: <PrivateRoute><ManageBorder/></PrivateRoute>,
       },
       {
         path: "/dashboard/manageUsers",
-        element: <ManageUsers/>
+        element: <PrivateRoute><ManageUsers/></PrivateRoute>
       },
       {
         path: "/dashboard/monthlyMeals",
-        element: <MonthlyMeals/>
+        element: <PrivateRoute><MonthlyMeals/></PrivateRoute>
       }
     ]
   }
