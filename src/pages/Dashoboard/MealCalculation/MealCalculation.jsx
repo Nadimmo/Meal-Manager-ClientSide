@@ -76,7 +76,7 @@ const handleSubmit = async () => {
     };
 
     const monthlyRes = await axiosPublic.post("/borders/monthly-meals", monthlyPayload);
-    if (monthlyRes.data.insertedCount > 0) {
+    if (monthlyRes.data.insertedId> 0) {
       console.log("Monthly meal data recorded successfully!");
     }
 

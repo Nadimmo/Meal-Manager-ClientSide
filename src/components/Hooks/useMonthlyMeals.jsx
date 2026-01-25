@@ -6,7 +6,7 @@ const useMonthlyMeals = () => {
   const { data: monthlyMeals, refetch } = useQuery({
     queryKey: ["monthlyMeals"],
     queryFn: async () => {
-      const response = await axiosPublic.get("/borders/monthly-meals");
+      const response = await axiosPublic.get("/monthly-meals");
       return response.data;
     },
   });
