@@ -46,7 +46,7 @@ const Route = createBrowserRouter([
       },
       {
         path: "/dashboard/manageBorder",
-        element: <ManageBorder/>
+        element: <ManageBorder/>,
       },
       {
         path: "/dashboard/manageUsers",

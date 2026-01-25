@@ -7,10 +7,18 @@ const ManageBorder = () => {
   const { borders, refetch } = useAllBorder();
   const axiosPublic = useAxiosPublic();
 
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    deposit: "",
+  });
+
+  // -------- DELETE --------
   const handleDelete = (id) => {
     Swal.fire({
       title: "Are you sure?",
-      text: "You won't be remove this border!",
+      text: "This border will be removed!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -18,74 +26,79 @@ const ManageBorder = () => {
       confirmButtonText: "Yes, delete it!",
     }).then((result) => {
       if (result.isConfirmed) {
-        axiosPublic
-          .delete(`/borders/${id}`)
-          .then((res) => {
-            if (res.data.deletedCount > 0) {
-              Swal.fire({
-                title: "Deleted!",
-                text: "Your file has been deleted.",
-                icon: "success",
-              });
-              refetch();
-            }
-          })
-          .catch((error) => {
-            console.error("Error deleting border:", error);
-          });
+        axiosPublic.delete(`/borders/${id}`).then((res) => {
+          if (res.data.deletedCount > 0) {
+            Swal.fire("Deleted!", "Border removed successfully.", "success");
+            refetch();
+          }
+        });
       }
     });
+  };
+
+  // -------- OPEN MODAL --------
+  const openUpdateModal = (user) => {
+    setSelectedUser(user);
+    setFormData({
+      name: user.name,
+      email: user.email,
+      deposit: user.deposit || "",
+    });
+    document.getElementById("update_modal").checked = true;
+  };
+
+  // -------- UPDATE --------
+  const handleUpdate = async () => {
+    try {
+      const res = await axiosPublic.put(
+        `/borders/${selectedUser._id}`,
+        formData
+      );
+
+      if (res.data.modifiedCount > 0) {
+        Swal.fire("Updated!", "Border updated successfully.", "success");
+        document.getElementById("update_modal").checked = false;
+        setSelectedUser(null);
+        refetch();
+      }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Failed to update border", "error");
+    }
   };
 
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-5xl mx-auto">
-        <div className="mb-6">
-          <h1 className="text-2xl font-bold text-gray-800">
-            Borders Management
-          </h1>
-        </div>
+        <h1 className="text-2xl font-bold mb-6">Borders Management</h1>
 
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-gray-100 border-b border-gray-200">
-                <th className="px-6 py-4 font-semibold text-gray-700">Name</th>
-                <th className="px-6 py-4 font-semibold text-gray-700">
-                  Email Address
-                </th>
-                <th className="px-6 py-4 font-semibold text-center text-gray-700">
-                  Actions
-                </th>
+        <div className="bg-white rounded-xl shadow border overflow-hidden">
+          <table className="w-full">
+            <thead className="bg-gray-100 border-b">
+              <tr>
+                <th className="px-6 py-4 text-left">Name</th>
+                <th className="px-6 py-4 text-left">Email</th>
+                <th className="px-6 py-4 text-center">Actions</th>
               </tr>
             </thead>
+
             <tbody>
               {borders.map((user) => (
-                <tr
-                  key={user.id}
-                  className="border-b border-gray-100 hover:bg-gray-50 transition"
-                >
-                  <td className="px-6 py-4 font-medium text-gray-900">
-                    {user.name}
-                  </td>
-                  <td className="px-6 py-4 text-gray-600">{user.email}</td>
-
+                <tr key={user._id} className="border-b hover:bg-gray-50">
+                  <td className="px-6 py-4">{user.name}</td>
+                  <td className="px-6 py-4">{user.email}</td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-3">
-                      {/* Update Button */}
                       <button
-                        disabled={user.role === "admin"}
-                        className={`px-3 py-1.5 text-xs font-semibold rounded-md border transition-all 
-                           text-indigo-600 border-indigo-600 hover:bg-indigo-600 hover:text-white
-                        `}
+                        onClick={() => openUpdateModal(user)}
+                        className="px-3 py-1.5 text-xs font-semibold text-blue-600 border border-blue-600 rounded hover:bg-blue-600 hover:text-white"
                       >
                         Update
                       </button>
 
-                      {/* Delete Button */}
                       <button
                         onClick={() => handleDelete(user._id)}
-                        className="px-3 py-1.5 text-xs font-semibold text-rose-600 border border-rose-600 rounded-md hover:bg-rose-600 hover:text-white transition-all"
+                        className="px-3 py-1.5 text-xs font-semibold text-rose-600 border border-rose-600 rounded hover:bg-rose-600 hover:text-white"
                       >
                         Delete
                       </button>
@@ -95,11 +108,54 @@ const ManageBorder = () => {
               ))}
             </tbody>
           </table>
+
           {borders.length === 0 && (
-            <div className="p-10 text-center text-gray-400">
-              No borders found.
-            </div>
+            <p className="p-10 text-center text-gray-400">No borders found</p>
           )}
+        </div>
+      </div>
+
+      {/* ---------- UPDATE MODAL ---------- */}
+      <input type="checkbox" id="update_modal" className="modal-toggle" />
+      <div className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg mb-4">Update Border</h3>
+
+          <input
+            className="input input-bordered w-full mb-3"
+            placeholder="Name"
+            value={formData.name}
+            onChange={(e) =>
+              setFormData({ ...formData, name: e.target.value })
+            }
+          />
+
+          <input
+            className="input input-bordered w-full mb-3"
+            placeholder="Email"
+            value={formData.email}
+            onChange={(e) =>
+              setFormData({ ...formData, email: e.target.value })
+            }
+          />
+
+          <input
+            className="input input-bordered w-full"
+            placeholder="Deposit"
+            value={formData.deposit}
+            onChange={(e) =>
+              setFormData({ ...formData, deposit: e.target.value })
+            }
+          />
+
+          <div className="modal-action">
+            <button onClick={handleUpdate} className="btn btn-primary">
+              Save
+            </button>
+            <label htmlFor="update_modal" className="btn">
+              Cancel
+            </label>
+          </div>
         </div>
       </div>
     </div>
