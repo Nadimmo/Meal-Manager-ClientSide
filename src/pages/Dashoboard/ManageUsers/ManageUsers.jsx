@@ -7,10 +7,32 @@ const ManageUsers = () => {
   // Mock data including a "role" field
   const {allUsers, refetch} = useAllUsers()
   const axiosSecure = useAxiosSecure()
+  
+  
 
   const handleMakeAdmin = (id) => {
-    alert(`User ${id} is now an Admin! (Backend logic goes here)`);
-    // Logic to update state would go here
+    // alert(`User ${id} is now an Admin! (Backend logic goes here)`);
+    axiosSecure.patch(`/users/admin/${id}`)
+    .then((res)=>{
+      if(res.data.modifiedCount>0){
+        Swal.fire({
+          position: 'top-end',
+          icon: 'success',
+          title: 'User has been promoted to Admin',
+          showConfirmButton: false,
+          timer: 1500
+        });
+        refetch();
+      }
+    })
+    .catch((error)=>{
+      console.error("Error promoting user to admin:", error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Oops...',
+        text: 'Something went wrong while promoting the user.',
+      });
+    });
   };
 
   // -------- DELETE --------
