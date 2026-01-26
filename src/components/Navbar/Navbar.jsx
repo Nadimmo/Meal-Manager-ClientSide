@@ -1,11 +1,12 @@
 import React, { useContext } from "react";
 import { Link, Navigate, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../AuthProvider/AuthProvider";
+import useAdmin from "../Hooks/useAdmin";
 
 function Navbar() {
   const { user, logOut } = useContext(AuthContext);
   const navigate = useNavigate()
-  
+  const {isAdmin} = useAdmin()
 
   const Links = (
     <>
@@ -15,12 +16,20 @@ function Navbar() {
       >
         Home
       </Link>
-      <Link
+      {user && isAdmin && <Link
         to="/dashboard/addNewBorder"
         className="relative py-1 px-2 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full"
       >
         Dashboard
+      </Link>}
+      {
+        user && !isAdmin && <Link
+        to="/dashboard/myMeals"
+        className="relative py-1 px-2 after:absolute after:bottom-0 after:left-0 after:h-[2px] after:w-0 after:bg-blue-500 after:transition-all hover:after:w-full"
+      >
+        Dashboard
       </Link>
+      }
     </>
   );
 

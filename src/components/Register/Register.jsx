@@ -65,7 +65,7 @@ const Register = () => {
       };
       // send data info to backend
       axiosPublic.post("/users", userInfo).then((res) => {
-        if (res.data.insertedId || res.data.alreadyExists) {
+        if (res) {
           alert(
             "Login successful!",
           );

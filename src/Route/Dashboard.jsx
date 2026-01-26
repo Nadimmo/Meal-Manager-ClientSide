@@ -1,9 +1,11 @@
 import { NavLink, Outlet } from "react-router-dom";
 import { FaBars } from "react-icons/fa";
 import { useState } from "react";
+import useAdmin from "../components/Hooks/useAdmin";
 
 const Dashboard = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAdmin } = useAdmin();
   // console.log(isAdmin)
   return (
     <div className="min-h-screen ">
@@ -18,57 +20,82 @@ const Dashboard = () => {
           className={`bg-slate-800 text-white  lg:w-1/4 p-6 
       ${isOpen ? "block" : "hidden"} md:block`}
         >
-          <div>
-            <ul className="space-y-3">
-               <NavLink
-                to="/dashboard/addNewBorder"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
-                    : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
-                }
-              >
-                Add New Border
-              </NavLink>
+          {isAdmin ? (
+            <div>
+              <ul className="space-y-3">
+                <NavLink
+                  to="/dashboard/addNewBorder"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                      : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                  }
+                >
+                  Add New Border
+                </NavLink>
+                <NavLink
+                  to="/dashboard/mealCalculation"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                      : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                  }
+                >
+                  Meal Calculation
+                </NavLink>
+                <NavLink
+                  to="/dashboard/monthlyMeals"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                      : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                  }
+                >
+                  Monthly Meals
+                </NavLink>
+                <NavLink
+                  to="/dashboard/manageBorder"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                      : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                  }
+                >
+                  Manage Border
+                </NavLink>
+                <NavLink
+                  to="/dashboard/manageUsers"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                      : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                  }
+                >
+                  Manage Users
+                </NavLink>
+                <NavLink
+                  to="/"
+                  className={({ isActive }) =>
+                    isActive
+                      ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
+                      : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
+                  }
+                >
+                  Home
+                </NavLink>
+              </ul>
+            </div>
+          ) : (
+            <div>
               <NavLink
-                to="/dashboard/mealCalculation"
+                to="/dashboard/myMeals"
                 className={({ isActive }) =>
                   isActive
                     ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
                     : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
                 }
               >
-                Meal Calculation
-              </NavLink>
-              <NavLink
-                to="/dashboard/monthlyMeals"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
-                    : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
-                }
-              >
-                Monthly Meals
-              </NavLink>
-              <NavLink
-                to="/dashboard/manageBorder"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
-                    : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
-                }
-              >
-                Manage Border
-              </NavLink>
-              <NavLink
-                to="/dashboard/manageUsers"
-                className={({ isActive }) =>
-                  isActive
-                    ? "block px-4 py-2 bg-[#30364F] rounded-md shadow-lg"
-                    : "block px-4 py-2 hover:bg-[#30364F] rounded-md transition duration-200"
-                }
-              >
-                Manage Users
+                My Meals
               </NavLink>
               <NavLink
                 to="/"
@@ -80,8 +107,8 @@ const Dashboard = () => {
               >
                 Home
               </NavLink>
-            </ul>
-          </div>
+            </div>
+          )}
         </div>
         {/* Content Area */}
         <div className="lg:w-3/4 bg-gray-100  lg:p-8 mx-auto w-auto">

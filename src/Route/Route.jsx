@@ -55,7 +55,11 @@ const Route = createBrowserRouter([
       },
       {
         path: "/dashboard/monthlyMeals",
-        element: <PrivateRoute><MonthlyMeals/></PrivateRoute>
+        element: <MonthlyMeals/>
+      },
+      {
+        path: "/dashboard/myMeals",
+        element: <MonthlyMeals/>
       }
     ]
   }
