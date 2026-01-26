@@ -7,7 +7,7 @@ const AddNewBorder = () => {
     name: "",
     email: "",
     phone: "",
-    roomNo: "",
+    messName: "",
     mealCharge: "",
     deposit: "",
   });
@@ -29,7 +29,7 @@ const AddNewBorder = () => {
             name: "",
             email: "",
             phone: "",
-            roomNo: "",
+            messName: "",
             mealCharge: "",
             deposit: "",
           });
@@ -101,17 +101,17 @@ const AddNewBorder = () => {
               />
             </div>
 
-            {/* Room Number Field */}
+            {/* Mess Name Field */}
             <div>
               <label className="block text-sm font-semibold text-gray-700 mb-2">
-                Room Number
+                Mess Name
               </label>
               <input
                 type="text"
-                name="roomNo"
-                value={formData.roomNo}
+                name="messName"
+                value={formData.messName}
                 onChange={handleChange}
-                placeholder="e.g. 302-B"
+                placeholder="your mess name"
                 className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none transition"
               />
             </div>

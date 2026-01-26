@@ -1,6 +1,8 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useAllBorder from "../../../components/Hooks/useAllBorder";
 import useAxiosSecure from "../../../components/Hooks/useAxiosSecure";
+import { AuthContext } from "../../../AuthProvider/AuthProvider";
+import useAllUsers from "../../../components/Hooks/useAllUsers";
 
 const MealCalculation = () => {
   // Current Date for the input (defaults to today)
@@ -11,88 +13,92 @@ const MealCalculation = () => {
   const { borders: initialBorders } = useAllBorder();
   const [borders, setBorders] = useState([]);
 
+  const { user } = useContext(AuthContext); //get login user
+  const { allUsers } = useAllUsers(); // all users from database
+  // find login user in database by
+  const searchUser = allUsers.find((u) => u?.email === user?.email);
+  const results = borders.filter(b => b?.messName === searchUser?.messName) // borders show by mess name
+  // console.log(result);
+
+
   useEffect(() => {
-  if (initialBorders?.length) {
-    setBorders(
-      initialBorders.map(b => ({
-        ...b,
-        mealCount: b.mealCount || 0,
-        todayMeal: 0, 
-      }))
-    );
-  }
-}, [initialBorders]);
-
-
+    if (initialBorders?.length) {
+      setBorders(
+        initialBorders.map((b) => ({
+          ...b,
+          mealCount: b.mealCount || 0,
+          todayMeal: 0,
+        })),
+      );
+    }
+  }, [initialBorders]);
 
   // Handle increment and decrement
   const updateMealCount = (memberId, delta) => {
-  setBorders(prev =>
-    prev.map(member =>
-      member._id === memberId
-        ? {
-            ...member,
-            mealCount: Math.max(0, member.mealCount + delta),
-            todayMeal:
-              delta > 0
-                ? member.todayMeal + delta
-                : Math.max(0, member.todayMeal + delta),
-          }
-        : member
-    )
-  );
-};
-
-
-
-const handleSubmit = async () => {
-  // update meal counts for each border
-  const payload = {
-    date: new Date(),
-    borders: borders.map(member => ({
-      borderId: member._id,     // important
-      email: member.email,
-      mealCount: member.mealCount || 0,
-    })),
+    setBorders((prev) =>
+      prev.map((member) =>
+        member._id === memberId
+          ? {
+              ...member,
+              mealCount: Math.max(0, member.mealCount + delta),
+              todayMeal:
+                delta > 0
+                  ? member.todayMeal + delta
+                  : Math.max(0, member.todayMeal + delta),
+            }
+          : member,
+      ),
+    );
   };
 
-  try {
-    const res = await axiosSecure.patch("/borders/meals", payload);
-
-    if (res.data.modifiedCount > 0) {
-      alert("Meal counts updated successfully!");
-    }
-
-
-    // send data to server border monthly meal collection
-    const monthlyPayload ={
-      month: new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
-      borders: borders.map(member => ({
-        date: new Date(),
-        name: member.name,
+  const handleSubmit = async () => {
+    // update meal counts for each border
+    const payload = {
+      date: new Date(),
+      borders: borders.map((member) => ({
+        borderId: member._id, // important
         email: member.email,
-        meal: member.todayMeal || 0,
-    } )),
+        mealCount: member.mealCount || 0,
+      })),
     };
 
-    const monthlyRes = await axiosSecure.post("/monthly-meals", monthlyPayload);
-    if (monthlyRes.data.insertedId> 0) {
-      console.log("Monthly meal data recorded successfully!");
+    try {
+      const res = await axiosSecure.patch("/borders/meals", payload);
+
+      if (res.data.modifiedCount > 0) {
+        alert("Meal counts updated successfully!");
+      }
+
+      // send data to server border monthly meal collection
+      const monthlyPayload = {
+        month: new Date().toLocaleString("default", {
+          month: "long",
+          year: "numeric",
+        }),
+        borders: borders.map((member) => ({
+          date: new Date(),
+          name: member.name,
+          email: member.email,
+          meal: member.todayMeal || 0,
+          messName: member.messName
+        })),
+      };
+
+      const monthlyRes = await axiosSecure.post(
+        "/monthly-meals",
+        monthlyPayload,
+      );
+      if (monthlyRes.data.insertedId > 0) {
+        console.log("Monthly meal data recorded successfully!");
+      }
+
+      // Reset todayMeal counts after submission
+      setBorders((prev) => prev.map((b) => ({ ...b, todayMeal: 0 })));
+    } catch (err) {
+      console.error("Error updating meal counts:", err);
+      alert("Failed to update meal counts");
     }
-
-// Reset todayMeal counts after submission
-    setBorders(prev =>
-  prev.map(b => ({ ...b, todayMeal: 0 }))
-);
-
-
-  } catch (err) {
-    console.error("Error updating meal counts:", err);
-    alert("Failed to update meal counts");
-  }
-};
-
-
+  };
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
@@ -101,7 +107,7 @@ const handleSubmit = async () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">
-              Daily Meal Entry
+             {searchUser?.messName} Daily Meal Entry
             </h1>
             <p className="text-slate-500 text-sm">
               Update how many meals each member had today.
@@ -134,9 +140,11 @@ const handleSubmit = async () => {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
-              {borders.map((member) => (
-                
-                <tr key={member._id} className="hover:bg-slate-50/50 transition">
+              {results.map((member) => (
+                <tr
+                  key={member._id}
+                  className="hover:bg-slate-50/50 transition"
+                >
                   <td className="px-6 py-4">
                     <div className="font-semibold text-slate-800">
                       {member.name}
@@ -178,7 +186,7 @@ const handleSubmit = async () => {
           {/* Submit Action */}
           <div className="p-6 bg-slate-50 border-t border-slate-200 flex justify-end">
             <button
-              onClick={ handleSubmit}
+              onClick={handleSubmit}
               className="bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-2 px-8 rounded-lg shadow-lg shadow-indigo-200 transition-all active:scale-95"
             >
               Submit Daily Meals

@@ -1,17 +1,26 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import useMonthlyMeals from "../../../components/Hooks/useMonthlyMeals";
+import { AuthContext } from "../../../AuthProvider/AuthProvider";
+import useAllUsers from "../../../components/Hooks/useAllUsers";
 
 const MonthlyMeals = () => {
   const { monthlyMeals } = useMonthlyMeals();
   const [search, setSearch] = useState("");
 
+  const { user } = useContext(AuthContext); //get login user
+  const { allUsers } = useAllUsers(); // all users from database
+  // find login user in database by
+  const searchUser = allUsers?.find((u) => u.email === user?.email);
+  const messName = searchUser?.messName;
+
   // flatten borders & apply search filter
   const filteredMeals = monthlyMeals
-    ?.flatMap((month) => month.borders || [])
+    ?.flatMap((month) => month?.borders || [])
+    .filter((border) => border?.messName === messName) // 👈 mess-wise filter
     .filter(
       (border) =>
-        border.name?.toLowerCase().includes(search.toLowerCase()) ||
-        border.email?.toLowerCase().includes(search.toLowerCase()),
+        border?.name?.toLowerCase().includes(search.toLowerCase()) ||
+        border?.email?.toLowerCase().includes(search.toLowerCase()),
     );
 
   const highlightText = (text, search) => {
@@ -34,7 +43,7 @@ const MonthlyMeals = () => {
   return (
     <div className="p-6 bg-white rounded-xl shadow">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
-        Monthly Meals 🍽️
+        Monthly Meals {searchUser?.messName} 🍽️
       </h2>
 
       {/* Search Bar */}

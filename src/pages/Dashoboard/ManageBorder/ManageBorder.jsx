@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import useAllBorder from "../../../components/Hooks/useAllBorder";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../components/Hooks/useAxiosSecure";
+import { AuthContext } from "../../../AuthProvider/AuthProvider";
+import useAllUsers from "../../../components/Hooks/useAllUsers";
 
 const ManageBorder = () => {
   const { borders, refetch } = useAllBorder();
   const axiosSecure = useAxiosSecure();
+
+    const { user } = useContext(AuthContext); //get login user
+    const { allUsers } = useAllUsers(); // all users from database
+    // find login user in database by
+    const searchUser = allUsers.find((u) => u?.email === user?.email);
+    const results = borders.filter(b => b?.messName === searchUser?.messName) // borders show by mess name
+    // console.log(result);
 
   const [selectedUser, setSelectedUser] = useState(null);
   const [formData, setFormData] = useState({
@@ -72,7 +81,7 @@ const ManageBorder = () => {
   return (
     <div className="p-6 bg-gray-50 min-h-screen">
       <div className="max-w-5xl mx-auto">
-        <h1 className="text-2xl font-bold mb-6">Borders Management</h1>
+        <h1 className="text-2xl font-bold mb-6">Borders Management {searchUser?.messName}</h1>
 
         <div className="bg-white rounded-xl shadow border overflow-hidden">
           <table className="w-full">
@@ -80,15 +89,17 @@ const ManageBorder = () => {
               <tr>
                 <th className="px-6 py-4 text-left">Name</th>
                 <th className="px-6 py-4 text-left">Email</th>
+                <th className="px-6 py-4 text-left">Mess Name</th>
                 <th className="px-6 py-4 text-center">Actions</th>
               </tr>
             </thead>
 
             <tbody>
-              {borders.map((user) => (
+              {results.map((user) => (
                 <tr key={user._id} className="border-b hover:bg-gray-50">
                   <td className="px-6 py-4">{user.name}</td>
                   <td className="px-6 py-4">{user.email}</td>
+                  <td className="px-6 py-4">{user.messName}</td>
                   <td className="px-6 py-4">
                     <div className="flex justify-center gap-3">
                       <button

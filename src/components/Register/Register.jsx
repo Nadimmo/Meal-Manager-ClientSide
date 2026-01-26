@@ -4,7 +4,7 @@ import { AuthContext } from "../../AuthProvider/AuthProvider";
 import useAxiosPublic from "../Hooks/useAxiosPublic";
 
 const Register = () => {
-  const { signUp, profileUpdate , googleSignIn} = useContext(AuthContext);
+  const { signUp, profileUpdate, googleSignIn } = useContext(AuthContext);
   const navigate = useNavigate();
   const axiosPublic = useAxiosPublic();
 
@@ -13,6 +13,7 @@ const Register = () => {
     email: "",
     password: "",
     confirmPassword: "",
+    messName: "",
   });
 
   const handleChange = (e) => {
@@ -24,61 +25,58 @@ const Register = () => {
     const userInfo = {
       fullName: formData.fullName,
       email: formData.email,
+      messName: formData.messName,
     };
-  //  // Password match check 
+    //  // Password match check
     if (formData.password !== formData.confirmPassword) {
       alert("Passwords do not match!");
       return;
     }
-    signUp(formData.email, formData.password).then((userCredential) => {
-      if (userCredential.user) {
-        profileUpdate(formData.fullName)
-        .then((res)=>{
-        // send data info to backend
+    signUp(formData.email, formData.password).then((res) => {
+      if (res) {
+        profileUpdate(formData.fullName).then((res) => {
+          // send data info to backend
           axiosPublic.post("/users", userInfo).then((res) => {
-          if (res.data.insertedId) {
-            alert(
-              "Registration successful!",
-            );
-            setFormData({
-              fullName: "",
-              email: "",
-              password: "",
-              confirmPassword: "",
-            });
-            navigate("/");
-          }
+            if (res.data) {
+              alert("Registration successful!");
+              setFormData({
+                fullName: "",
+                email: "",
+                password: "",
+                confirmPassword: "",
+              });
+              navigate("/");
+            }
+          });
         });
-        })
       }
     });
   };
 
-  const handleGoogle = () => {
-    // Implement Google Sign-In logic here
-    googleSignIn()
-    .then((result) => {
-      const loggedUser = result.user;
-      const userInfo = {
-        fullName: loggedUser.displayName,
-        email: loggedUser.email,
-      };
-      // send data info to backend
-      axiosPublic.post("/users", userInfo).then((res) => {
-        if (res) {
-          alert(
-            "Login successful!",
-          );
-          navigate("/");
-        }
-      });
-    })
-    .catch((error) => {
-      console.error("Google Sign-In Error:", error);
-    });
-     
+  // const handleGoogle = () => {
+  //   // Implement Google Sign-In logic here
+  //   googleSignIn()
+  //   .then((result) => {
+  //     const loggedUser = result.user;
+  //     const userInfo = {
+  //       fullName: loggedUser.displayName,
+  //       email: loggedUser.email,
+  //     };
+  //     // send data info to backend
+  //     axiosPublic.post("/users", userInfo).then((res) => {
+  //       if (res) {
+  //         alert(
+  //           "Login successful!",
+  //         );
+  //         navigate("/");
+  //       }
+  //     });
+  //   })
+  //   .catch((error) => {
+  //     console.error("Google Sign-In Error:", error);
+  //   });
 
-  }
+  // }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
@@ -127,7 +125,19 @@ const Register = () => {
               onChange={handleChange}
             />
           </div>
-
+          <div>
+            <label className="block text-sm font-semibold text-slate-700 mb-1.5">
+              Mess Name
+            </label>
+            <input
+              name="messName"
+              type="text"
+              required
+              className="w-full px-4 py-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition"
+              placeholder="enter your mess name"
+              onChange={handleChange}
+            />
+          </div>
           <div>
             <label className="block text-sm font-semibold text-slate-700 mb-1.5">
               Password
@@ -164,7 +174,7 @@ const Register = () => {
           </button>
         </form>
 
-        <button onClick={handleGoogle} className="btn bg-white text-black border-[#e5e5e5] w-full mt-2">
+        {/* <button onClick={handleGoogle} className="btn bg-white text-black border-[#e5e5e5] w-full mt-2">
           <svg
             aria-label="Google logo"
             width="16"
@@ -193,7 +203,7 @@ const Register = () => {
             </g>
           </svg>
           Sign in with Google
-        </button>
+        </button> */}
       </div>
     </div>
   );
