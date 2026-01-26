@@ -10,6 +10,7 @@ import Login from '../components/Login/Login.jsx';
 import Register from '../components/Register/Register.jsx';
 import MonthlyMeals from '../pages/Dashoboard/MonthlyMeals/MonthlyMeals.jsx';
 import PrivateRoute from './PrivateRoute.jsx';
+import MyMeals from '../pages/Dashoboard/MyMeals/MyMeals.jsx';
 
 
 const Route = createBrowserRouter([
@@ -55,11 +56,11 @@ const Route = createBrowserRouter([
       },
       {
         path: "/dashboard/monthlyMeals",
-        element: <MonthlyMeals/>
+        element: <PrivateRoute><MonthlyMeals/></PrivateRoute>
       },
       {
         path: "/dashboard/myMeals",
-        element: <MonthlyMeals/>
+        element: <MyMeals/>
       }
     ]
   }
