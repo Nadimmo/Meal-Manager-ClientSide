@@ -16,7 +16,7 @@ const MonthlyMeals = () => {
   // flatten borders & apply search filter
   const filteredMeals = monthlyMeals
     ?.flatMap((month) => month?.borders || [])
-    .filter((border) => border?.messName === messName) // 👈 mess-wise filter
+    .filter((border) => border?.messName.toLowerCase() === messName.toLowerCase()) // 👈 mess-wise filter
     .filter(
       (border) =>
         border?.name?.toLowerCase().includes(search.toLowerCase()) ||

@@ -17,9 +17,12 @@ const MealCalculation = () => {
   const { allUsers } = useAllUsers(); // all users from database
   // find login user in database by
   const searchUser = allUsers.find((u) => u?.email === user?.email);
-  const results = borders.filter(b => b?.messName === searchUser?.messName) // borders show by mess name
+  const results = borders.filter((b) => b?.messName.toLowerCase() === searchUser?.messName.toLowerCase()); // borders show by mess name
   // console.log(result);
 
+  const messName = searchUser?.messName;
+
+  const messBorders = borders.filter((b) => b?.messName.toLowerCase() === messName.toLowerCase());
 
   useEffect(() => {
     if (initialBorders?.length) {
@@ -52,11 +55,10 @@ const MealCalculation = () => {
   };
 
   const handleSubmit = async () => {
-    // update meal counts for each border
     const payload = {
-      date: new Date(),
-      borders: borders.map((member) => ({
-        borderId: member._id, // important
+      date: selectedDate,
+      borders: messBorders.map((member) => ({
+        borderId: member._id,
         email: member.email,
         mealCount: member.mealCount || 0,
       })),
@@ -69,33 +71,29 @@ const MealCalculation = () => {
         alert("Meal counts updated successfully!");
       }
 
-      // send data to server border monthly meal collection
+      // monthly meals
       const monthlyPayload = {
-        month: new Date().toLocaleString("default", {
+        month: new Date(selectedDate).toLocaleString("default", {
           month: "long",
           year: "numeric",
         }),
-        borders: borders.map((member) => ({
-          date: new Date(),
+        borders: messBorders.map((member) => ({
+          date: selectedDate,
           name: member.name,
           email: member.email,
           meal: member.todayMeal || 0,
-          messName: member.messName
+          messName: member.messName,
         })),
       };
 
-      const monthlyRes = await axiosSecure.post(
-        "/monthly-meals",
-        monthlyPayload,
-      );
-      if (monthlyRes.data.insertedId > 0) {
-        console.log("Monthly meal data recorded successfully!");
-      }
+      await axiosSecure.post("/monthly-meals", monthlyPayload);
 
-      // Reset todayMeal counts after submission
-      setBorders((prev) => prev.map((b) => ({ ...b, todayMeal: 0 })));
+      // reset only this mess users
+      setBorders((prev) =>
+        prev.map((b) => (b.messName === messName ? { ...b, todayMeal: 0 } : b)),
+      );
     } catch (err) {
-      console.error("Error updating meal counts:", err);
+      console.error(err);
       alert("Failed to update meal counts");
     }
   };
@@ -107,7 +105,7 @@ const MealCalculation = () => {
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
           <div>
             <h1 className="text-2xl font-bold text-slate-800">
-             {searchUser?.messName} Daily Meal Entry
+              {searchUser?.messName} Daily Meal Entry
             </h1>
             <p className="text-slate-500 text-sm">
               Update how many meals each member had today.
