@@ -12,7 +12,7 @@ const MyMeals = () => {
     ?.flatMap((month) => month.borders || [])
     .filter(
       (border) =>
-        border.email?.toLowerCase() === user?.email.toLowerCase()
+        border.email?.toLowerCase() === user?.email?.toLowerCase()
     );
 
   const highlightText = (text, search) => {

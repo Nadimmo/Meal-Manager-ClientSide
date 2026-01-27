@@ -17,12 +17,12 @@ const MealCalculation = () => {
   const { allUsers } = useAllUsers(); // all users from database
   // find login user in database by
   const searchUser = allUsers.find((u) => u?.email === user?.email);
-  const results = borders.filter((b) => b?.messName.toLowerCase() === searchUser?.messName.toLowerCase()); // borders show by mess name
+  const results = borders.filter((b) => b?.messName?.toLowerCase() === searchUser?.messName?.toLowerCase()); // borders show by mess name
   // console.log(result);
 
   const messName = searchUser?.messName;
 
-  const messBorders = borders.filter((b) => b?.messName.toLowerCase() === messName.toLowerCase());
+  const messBorders = borders.filter((b) => b?.messName?.toLowerCase() === messName?.toLowerCase());
 
   useEffect(() => {
     if (initialBorders?.length) {

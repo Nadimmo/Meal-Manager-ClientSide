@@ -16,11 +16,11 @@ const MonthlyMeals = () => {
   // flatten borders & apply search filter
   const filteredMeals = monthlyMeals
     ?.flatMap((month) => month?.borders || [])
-    .filter((border) => border?.messName.toLowerCase() === messName.toLowerCase()) // 👈 mess-wise filter
+    .filter((border) => border?.messName?.toLowerCase() === messName?.toLowerCase()) // 👈 mess-wise filter
     .filter(
       (border) =>
-        border?.name?.toLowerCase().includes(search.toLowerCase()) ||
-        border?.email?.toLowerCase().includes(search.toLowerCase()),
+        border?.name?.toLowerCase().includes(search?.toLowerCase()) ||
+        border?.email?.toLowerCase().includes(search?.toLowerCase()),
     );
 
   const highlightText = (text, search) => {
@@ -30,7 +30,7 @@ const MonthlyMeals = () => {
     const parts = text.split(regex);
 
     return parts.map((part, index) =>
-      part.toLowerCase() === search.toLowerCase() ? (
+      part?.toLowerCase() === search?.toLowerCase() ? (
         <span key={index} className="bg-yellow-200 text-black px-1 rounded">
           {part}
         </span>

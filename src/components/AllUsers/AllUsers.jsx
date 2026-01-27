@@ -1,17 +1,41 @@
-import React from 'react';
-import useAllBorder from '../Hooks/useAllBorder';
+import React, { useState } from "react";
+import useAllBorder from "../Hooks/useAllBorder";
 
 const AllUsers = () => {
   // Updated mock data with Deposit and Bill
   const { borders, refetch } = useAllBorder();
-  
+  const [search, setSearch] = useState("");
+
+  const filteredMeals = borders.filter((border) => {
+    const query = search.toLowerCase();
+
+    return (
+      border.email?.toLowerCase().includes(query) ||
+      border.name?.toLowerCase().includes(query)
+    );
+  });
 
   return (
     <div className="p-8 bg-slate-50 min-h-screen">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8 text-center">
-          <h1 className="text-3xl font-extrabold text-slate-800">Mess Manager Dashboard</h1>
-          <p className="text-slate-500">Manage member deposits, bills, and monthly dues.</p>
+          <h1 className="text-3xl font-extrabold text-slate-800">
+            Mess Manager Dashboard
+          </h1>
+          <p className="text-slate-500">
+            Manage member deposits, bills, and monthly dues.
+          </p>
+        </div>
+
+        {/* Search Bar */}
+        <div className="mb-5 flex justify-end">
+          <input
+            type="text"
+            placeholder="Search by name or email..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="w-full md:w-80 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
         </div>
 
         <div className="bg-white shadow-xl rounded-2xl overflow-hidden border border-slate-200">
@@ -26,19 +50,27 @@ const AllUsers = () => {
               </tr>
             </thead>
             <tbody className="text-slate-700 text-sm">
-              {borders.map((member) => {
+              {filteredMeals.map((member) => {
                 // Calculation Logic
-                const bill =( member.mealCount || 0) * parseInt(member.mealCharge);
-                
+                const mealCharge = parseInt(member.mealCharge) || 0;
+                const bill = (member.mealCount || 0) * mealCharge;
+
                 const balance = member.deposit - bill;
                 const isDue = balance < 0;
                 const isCleared = balance === 0;
 
                 return (
-                  <tr key={member._id} className="border-b border-slate-100 hover:bg-blue-50/50 transition-colors">
+                  <tr
+                    key={member._id}
+                    className="border-b border-slate-100 hover:bg-blue-50/50 transition-colors"
+                  >
                     <td className="py-4 px-6">
-                      <div className="font-bold text-slate-900">{member.name}</div>
-                      <div className="text-xs text-slate-400">{member.email}</div>
+                      <div className="font-bold text-slate-900">
+                        {member.name}
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        {member.email}
+                      </div>
                     </td>
                     <td className="py-4 px-6 text-center font-medium">
                       {member.mealCount || 0}
@@ -59,14 +91,18 @@ const AllUsers = () => {
                           <span className="bg-red-100 text-red-700 px-3 py-1 rounded-full text-xs font-bold">
                             DUE
                           </span>
-                          <span className="text-red-600 font-bold mt-1">৳{Math.abs(balance)}</span>
+                          <span className="text-red-600 font-bold mt-1">
+                            ৳{Math.abs(balance)}
+                          </span>
                         </div>
                       ) : (
                         <div className="flex flex-col items-center">
                           <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-bold">
                             BALANCE
                           </span>
-                          <span className="text-green-600 font-bold mt-1">৳{balance}</span>
+                          <span className="text-green-600 font-bold mt-1">
+                            ৳{balance}
+                          </span>
                         </div>
                       )}
                     </td>
@@ -74,6 +110,13 @@ const AllUsers = () => {
                 );
               })}
             </tbody>
+            {filteredMeals.length === 0 && (
+              <tr>
+                <td colSpan="5" className="text-center py-6 text-slate-400">
+                  No members found
+                </td>
+              </tr>
+            )}
           </table>
         </div>
       </div>
