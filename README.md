@@ -1,16 +1,202 @@
-# React + Vite
+# 🍽️ Meal Manager Website
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full‑stack **Meal Manager** web application designed to manage mess/hostel meals efficiently. The system supports **admin** and **user** roles with role‑based access control. Admins can manage borders, meals, and users, while users can view their monthly meal details.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🚀 Features Overview
 
-## React Compiler
+### 🏠 Home Page
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+Displays a table of all borders with the following information:
 
-## Expanding the ESLint configuration
+* Border Name
+* Email
+* Deposit
+* Bill
+* Total Meals
+* Due (Balance)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+Also includes:
+
+* Login
+* Register
+
+---
+
+## 🔐 Authentication & Authorization
+
+* Secure login & registration system
+* Role‑based access (Admin & User)
+* Private routes for protected pages
+
+---
+
+## 👑 Admin Features
+
+### ➕ Border Management
+
+* Add new border
+* Update border information
+* Delete border
+
+### 🍛 Meal Management
+
+* Update daily meal count
+* View **monthly meals** of all borders
+* Filter meals by **Mess Name**
+* Search borders by **name or email**
+
+### 👥 User Management
+
+* View all users
+* Make a user **Admin**
+* Delete user
+
+---
+
+## 👤 User Features
+
+* View **monthly meal report** (only logged‑in users)
+* See personal meal count, bill, and due amount
+
+> ⚠️ Users **cannot** access admin features
+
+---
+
+## 🔎 Search & Filter System
+
+* Search borders by **name or email**
+* Filter monthly meals by **mess name**
+* Highlight matched search text for better UX
+
+---
+
+## 🛠️ Tech Stack
+
+### Frontend
+
+* React.js
+* Tailwind CSS
+* React Router
+* Axios
+
+### Backend
+
+* Node.js
+* Express.js
+* MongoDB
+* JWT Authentication
+
+---
+
+## 📁 Project Structure
+
+Client-side project structure based on the current codebase:
+
+```
+meal-manager-clientSide/
+├── src/
+│   ├── AuthProvider/        # Authentication context & provider
+│   ├── components/         # Reusable UI components
+│   │   ├── AllUsers/        # User-related components
+│   │   ├── Footer/
+│   │   ├── Hooks/           # Custom React hooks
+│   │   ├── Login/
+│   │   ├── Navbar/
+│   │   ├── Register/
+│   │   └── Firebase/        # Firebase configuration
+│   │
+│   ├── pages/
+│   │   ├── Dashboard/
+│   │   │   ├── AddNewBorder/    # Admin: add new border
+│   │   │   ├── ManageBorder/    # Admin: update & delete border
+│   │   │   ├── ManageUsers/     # Admin: manage users & roles
+│   │   │   ├── MealCalculation/ # Admin: meal count update
+│   │   │   ├── MonthlyMeals/    # Monthly meals (admin & user)
+│   │   │   └── MyMeals/         # User-only monthly meals
+│   │   │
+│   │   ├── Home/                # Home page
+│   │   └── Root/                # Root layout
+│   │
+│   ├── Route/                   # Application routing
+│   ├── App.css
+│   └── main.jsx
+│
+├── public/
+├── package.json
+└── README.md
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+### 1️⃣ Clone the Repository
+
+```bash
+git clone https://github.com/Nadimmo/Meal-Manager-ClientSide.git
+cd meal-manager
+```
+
+### 2️⃣ Frontend Setup
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+### 3️⃣ Backend Setup
+
+```bash
+cd server
+npm install
+npm run start
+```
+
+### 4️⃣ Environment Variables
+
+Create a `.env` file in the server directory:
+
+```
+PORT=5000
+MONGO_URI=your_mongodb_uri
+JWT_SECRET=your_jwt_secret
+```
+
+---
+
+## 📌 Role Permissions Table
+
+| Feature              | Admin | User |
+| -------------------- | ----- | ---- |
+| View Home Page       | ✅     | ✅    |
+| View Monthly Meals   | ✅     | ✅    |
+| Add Border           | ✅     | ❌    |
+| Update/Delete Border | ✅     | ❌    |
+| Update Meal Count    | ✅     | ❌    |
+| Manage Users         | ✅     | ❌    |
+
+---
+
+## 🧪 Future Improvements
+
+* Export monthly reports (PDF / Excel)
+* Payment integration
+* Notification system
+* Responsive dashboard charts
+
+---
+
+## 🙌 Author
+
+**Nadim Mostofa**
+Junior MERN Stack Developer
+🌐 Portfolio: [https://nadim-mostofa.vercel.app](https://nadim-mostofa.vercel.app)
+
+---
+
+## ⭐ Support
+
+If you like this project, please give it a ⭐ on GitHub!
