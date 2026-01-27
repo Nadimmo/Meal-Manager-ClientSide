@@ -5,14 +5,13 @@ import { initializeApp } from "firebase/app";
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-  apiKey: "AIzaSyCkfOvroHTy9bT-igTcX-_f9m4p0vMPNm4",
-  authDomain: "meal-manager-ec502.firebaseapp.com",
-  projectId: "meal-manager-ec502",
-  storageBucket: "meal-manager-ec502.firebasestorage.app",
-  messagingSenderId: "394423395372",
-  appId: "1:394423395372:web:e91febc8ae2e51c4639d89"
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
-
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 export default app;
